@@ -22,3 +22,7 @@ export CONDA_PKGS_DIRS="/media/data/conda/pkgs"
 export CONDA_ENVS_DIRS="/media/data/conda/$USER/envs"
 ```
 Exit session and log back in!
+
+```
+conda activate /media/data/conda/lakshmi/envs/pytorch
+```
