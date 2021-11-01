@@ -67,6 +67,8 @@ def main():
                         help='how many batches to wait before logging training status')
     parser.add_argument('--save-model', action='store_true', default=False,
                         help='For Saving the current Model')
+    parser.add_argument('--model-name', type=str)
+
     args = parser.parse_args()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -103,8 +105,8 @@ def main():
         test(model, device, test_loader)
         scheduler.step()
 
-    if args.save_model:
-        torch.save(model.state_dict(), "mnist_cnn.pt")
+        if args.save_model:
+            torch.save(model.state_dict(), os.path.join('ckpts', args.model-name, 'model_epoch_{}.pt'.format(epoch)))
 
 
 if __name__ == '__main__':
