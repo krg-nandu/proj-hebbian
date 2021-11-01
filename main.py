@@ -72,7 +72,6 @@ def main():
 
     args = parser.parse_args()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
-
     torch.manual_seed(args.seed)
 
     device = torch.device("cuda" if use_cuda else "cpu")
@@ -107,7 +106,7 @@ def main():
         scheduler.step()
 
         if args.save_model:
-            torch.save(model.state_dict(), os.path.join('ckpts', args.model-name, 'model_epoch_{}.pt'.format(epoch)))
+            torch.save(model.state_dict(), os.path.join('ckpts', args.model_name, 'model_epoch_{}.pt'.format(epoch)))
 
 
 if __name__ == '__main__':
