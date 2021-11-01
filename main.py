@@ -106,6 +106,8 @@ def main():
         scheduler.step()
 
         if args.save_model:
+            if not os.path.exists(os.path.join('ckpts', args.model_name)):
+                os.mkdir(os.path.join('ckpts', args.model_name))
             torch.save(model.state_dict(), os.path.join('ckpts', args.model_name, 'model_epoch_{}.pt'.format(epoch)))
 
 
