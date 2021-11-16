@@ -12,12 +12,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def track_interference(mygrad, epoch, batch_idx, BASE_FOLDER='res', LAYER='FC2'):
-    grad_proj = np.dot(mygrad, mygrad.T)
+    X = mygrad / np.linalg.norm(mygrad, axis=1, keepdims=True)
+    grad_proj = np.dot(X, X.T)
     plt.imshow(grad_proj, cmap=plt.cm.Greys_r, vmin=-1., vmax=1.)
 
-    plt.xticks(np.arange(10), np.arange(10))
-    plt.yticks(np.arange(10), np.arange(10))
-
+    if LAYER == 'FC2':
+        plt.xticks(np.arange(10), np.arange(10))
+        plt.yticks(np.arange(10), np.arange(10))
+    else:
+        plt.xticks([])
+        plt.yticks([])
     plt.savefig(os.path.join(BASE_FOLDER, LAYER, 'step%08d.png'%((epoch)*batch_idx)))
     plt.close()
 
@@ -30,7 +34,9 @@ def train(args, model, device, train_loader, optimizer, epoch):
         loss = F.nll_loss(output, target)
         loss.backward()
 
-        track_interference(model.fc2.weight.grad.detach().cpu().numpy(), epoch, batch_idx)
+        #import ipdb; ipdb.set_trace()
+        track_interference(model.fc2.weight.grad.detach().cpu().numpy(), epoch, batch_idx, LAYER='FC2')
+        track_interference(model.fc1.weight.grad.detach().cpu().numpy(), epoch, batch_idx, LAYER='FC1')
 
         optimizer.step()
         if batch_idx % args.log_interval == 0:
