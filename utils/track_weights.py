@@ -22,6 +22,7 @@ def main():
         model.load_state_dict(torch.load(os.path.join(ckpts_dir, 'model_epoch_{}.pt'.format(epoch+1))))
         model = model.eval()
 
+        import ipdb ; ipdb.set_trace()
         # lets look at the conv 1 weights
         W = model.conv1.weight.detach().cpu().numpy()
         for k in range(32):
