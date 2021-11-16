@@ -8,6 +8,18 @@ from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 from models.basic import Net
 import os
+import numpy as np
+import matplotlib.pyplot as plt
+
+def track_interference(mygrad, epoch, batch_idx, BASE_FOLDER='res', LAYER='FC2'):
+    grad_proj = np.dot(mygrad, mygrad.T)
+    plt.imshow(grad_proj, cmap=plt.cm.Greys_r, vmin=-1., vmax=1.)
+
+    plt.xticks(np.arange(10), np.arange(10))
+    plt.yticks(np.arange(10), np.arange(10))
+
+    plt.savefig(os.path.join(BASE_FOLDER, LAYER, 'step%08d.png'%((epoch)*batch_idx)))
+    plt.close()
 
 def train(args, model, device, train_loader, optimizer, epoch):
     model.train()
@@ -17,6 +29,9 @@ def train(args, model, device, train_loader, optimizer, epoch):
         output = model(data)
         loss = F.nll_loss(output, target)
         loss.backward()
+
+        track_interference(model.fc2.weight.grad.detach().cpu().numpy(), epoch, batch_idx)
+
         optimizer.step()
         if batch_idx % args.log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
